@@ -1,0 +1,4 @@
+growl.el simply Growl wrapper.
+
+NOTE: This code require growlnotify(1).
+See http://growl.info/extraps.php
