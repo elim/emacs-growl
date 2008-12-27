@@ -35,28 +35,40 @@
 ;;
 ;; (require 'growl)
 ;;
-;; (growl message)
+;; and...
+;;
+;; (growl "Hello World.")
+;;
 
 ;;; Change Log:
 
+;; 2008-12-27:
+;;  * Added mumbles-send support.
+;;
 ;; 2008-12-23:
 ;;  * Initial import.
 
 ;;; Code:
 
-(when (executable-find "growlnotify")
+(and (defalias 'growl
+       (cond
+        ((executable-find "growlnotify")
+         (defun growlnotify (message &optional name)
+           (start-process "growlnotify" "*Messages*"
+                          "growlnotify"
+                          "--name"    (or name "Emacs")
+                          "--appIcon" (or name "Emacs")
+                          "--message" message)))
 
-  (defun growlnotify (message &optional app-name)
-    (start-process "growlnotify" "*Messages*"
-                   "growlnotify"
-                   "--message" message
-                   "--appIcon" (or app-name "Emacs")))
+        ((executable-find "mumbles-send")
+         (defun mumbles-send (message &optional title)
+           (start-process "mumbles-send" "*Messages*"
+                          "mumbles-send"
+                          (or title "Emacs")
+                          message)))))
 
-  (defalias 'growl 'growlnotify)
-
-  (growl "growl.el loaded.")
-
-  (provide 'growl))
+     (growl "Hello World from growl.el :)")
+     (provide 'growl))
 
 ;;; growl.el ends here
 
